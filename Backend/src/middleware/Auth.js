@@ -1,16 +1,16 @@
-
-const expree = require("express");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const jwt =require("jsonwebtoken")
+
+// No need to require dotenv here if it's already loaded in main server.js
 const userAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
+
     if (!token) {
       return res.status(401).send("Please Login!");
     }
 
-    const decodedObj = await jwt.verify(token, "DEV@TINDER&7481");
-
+    const decodedObj = await jwt.verify(token, process.env.JWT_SECRET);
     const { _id } = decodedObj;
 
     const user = await User.findById(_id);
